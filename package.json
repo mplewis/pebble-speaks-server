@@ -1,0 +1,15 @@
+{
+  "name": "pebble-speaks-server",
+  "description": "Host speeches that you can run from your smartwatch.",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "3.4.8",
+    "async": "0.2.10",
+    "glob": "3.2.8"
+  },
+  "repository":{
+    "type": "git",
+    "url": "git@github.com:mplewis/pebble-speaks-server.git"
+  },
+  "homepage": "https://github.com/mplewis/pebble-speaks-server"
+}
