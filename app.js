@@ -92,7 +92,7 @@ app.post('/speeches', function(req, res) {
   });
 });
 
-app.post('/speeches/:speechNum', function(req, res) {
+app.put('/speeches/:speechNum', function(req, res) {
   getSpeeches(function(err, speeches) {
     if (err) {
       res.send(500, err);
