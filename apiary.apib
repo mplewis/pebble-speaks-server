@@ -100,6 +100,22 @@ A single Note object with all its details
             }
 
 ### Modify a Speech [POST]
++ Request (application/json)
+
+        {
+          "sections": [
+            {
+              "topic": "Kitties",
+              "seconds": 60
+            },
+            {
+              "topic": "Puppies",
+              "seconds": 20
+            }
+          ],
+          "title": "Favorite pets"
+        }
+
 + Response 200 (application/json)
 
         { "success": "Speech 0 saved!" }
