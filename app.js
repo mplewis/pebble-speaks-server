@@ -46,7 +46,7 @@ app.get('/speeches/:speechNum', function(req, res) {
     }
     var speechNum = req.params.speechNum;
     if (speechNum >= speeches.length) {
-      res.send(400, {error: 'Speech ' + speechNum + ' does not exist'});
+      res.send(404, {error: 'Speech ' + speechNum + ' does not exist'});
       return;
     }
     var speech = speeches[speechNum];
@@ -100,7 +100,7 @@ app.post('/speeches/:speechNum', function(req, res) {
     }
     var speechNum = req.params.speechNum;
     if (speechNum >= speeches.length) {
-      res.send(400, {error: 'Speech ' + speechNum + ' does not exist'});
+      res.send(404, {error: 'Speech ' + speechNum + ' does not exist'});
       return;
     }
     var contentType = req.get('Content-Type');
@@ -143,7 +143,7 @@ app.delete('/speeches/:speechNum', function(req, res) {
     }
     var speechNum = req.params.speechNum;
     if (speechNum >= speeches.length) {
-      res.send(400, {error: 'Speech ' + speechNum + ' does not exist'});
+      res.send(404, {error: 'Speech ' + speechNum + ' does not exist'});
       return;
     }
     speeches.splice(speechNum, 1);
