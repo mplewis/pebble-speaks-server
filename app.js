@@ -17,19 +17,24 @@ function getSpeeches(callback) {
   });
 }
 
+function saveSpeeches(speeches, callback) {
+  fs.writeFile(config.SPEECH_DATA, JSON.stringify(speeches), callback);
+}
+
 var app = express();
+app.use(express.bodyParser());
 
 app.get('/', function(req, res) {
   res.send({PennApps: 'Hello, Philly!'});
 });
 
 app.get('/speeches', function(req, res) {
-  getSpeeches(function() {
+  getSpeeches(function(err, data) {
     if (err) {
       callback(err);
       return;
     }
-    res.send(JSON.parse(fileData));
+    res.send(data);
   });
 });
 
@@ -40,9 +45,115 @@ app.get('/speeches/:speechNum', function(req, res) {
       return;
     }
     var speechNum = req.params.speechNum;
+    if (speechNum >= speeches.length) {
+      res.send(400, {error: 'Speech ' + speechNum + ' does not exist'});
+      return;
+    }
     var speech = speeches[speechNum];
-    console.log(speech);
     res.send(speech);
+  });
+});
+
+app.post('/speeches', function(req, res) {
+  getSpeeches(function(err, speeches) {
+    if (err) {
+      res.send(500, err);
+      return;
+    }
+    var contentType = req.get('Content-Type');
+    var newSpeechData;
+    if (contentType === 'application/x-www-form-urlencoded') {
+      if (!('speechData' in req.body)) {
+        res.send(400, {error: 'No speechData found in form post'});
+        return;
+      }
+      newSpeechData = JSON.parse(req.body.speechData);
+      speeches.push(newSpeechData);
+      saveSpeeches(speeches, function(err) {
+        if (err) {
+          res.send(500, err);
+          return;
+        }
+        res.send({success: 'Speech created!'});
+      });
+    } else if (contentType === 'application/json') {
+      newSpeechData = req.body;
+      speeches.push(newSpeechData);
+      saveSpeeches(speeches, function(err) {
+        if (err) {
+          res.send(500, err);
+          return;
+        }
+        res.send({success: 'Speech created!'});
+      });
+    } else {
+      res.send(403, {error: 'Content-Type not supported'});
+    }
+  });
+});
+
+app.post('/speeches/:speechNum', function(req, res) {
+  getSpeeches(function(err, speeches) {
+    if (err) {
+      res.send(500, err);
+      return;
+    }
+    var speechNum = req.params.speechNum;
+    if (speechNum >= speeches.length) {
+      res.send(400, {error: 'Speech ' + speechNum + ' does not exist'});
+      return;
+    }
+    var contentType = req.get('Content-Type');
+    var newSpeechData;
+    if (contentType === 'application/x-www-form-urlencoded') {
+      if (!('speechData' in req.body)) {
+        res.send(400, {error: 'No speechData found in form post'});
+        return;
+      }
+      newSpeechData = JSON.parse(req.body.speechData);
+      speeches[speechNum] = newSpeechData;
+      saveSpeeches(speeches, function(err) {
+        if (err) {
+          res.send(500, err);
+          return;
+        }
+        res.send({success: 'Speech ' + speechNum + ' saved!'});
+      });
+    } else if (contentType === 'application/json') {
+      newSpeechData = req.body;
+      speeches[speechNum] = newSpeechData;
+      saveSpeeches(speeches, function(err) {
+        if (err) {
+          res.send(500, err);
+          return;
+        }
+        res.send({success: 'Speech ' + speechNum + ' saved!'});
+      });
+    } else {
+      res.send(403, {error: 'Content-Type not supported'});
+    }
+  });
+});
+
+app.delete('/speeches/:speechNum', function(req, res) {
+  getSpeeches(function(err, speeches) {
+    if (err) {
+      res.send(500, err);
+      return;
+    }
+    var speechNum = req.params.speechNum;
+    if (speechNum >= speeches.length) {
+      res.send(400, {error: 'Speech ' + speechNum + ' does not exist'});
+      return;
+    }
+    speeches.splice(speechNum, 1);
+    saveSpeeches(speeches, function(err) {
+      if (err) {
+        res.send(500, err);
+        return;
+      }
+      res.send({success: 'Speech ' + speechNum + ' deleted!'});
+    });
   });
 });
 
