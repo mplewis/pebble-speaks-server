@@ -68,7 +68,8 @@ app.post('/speeches', function(req, res) {
     }
     var contentType = req.get('Content-Type');
     var newSpeechData;
-    if (contentType.indexOf('application/x-www-form-urlencoded') === 0) {
+    if (typeof contentType == 'undefined' || 
+        contentType.indexOf('application/x-www-form-urlencoded') === 0) {
       if (!('speechData' in req.body)) {
         res.send(400, {error: 'No speechData found in form post'});
         return;
@@ -111,7 +112,8 @@ app.put('/speeches/:speechNum', function(req, res) {
     }
     var contentType = req.get('Content-Type');
     var newSpeechData;
-    if (contentType.indexOf('application/x-www-form-urlencoded') === 0) {
+    if (typeof contentType == 'undefined' || 
+        contentType.indexOf('application/x-www-form-urlencoded') === 0) {
       if (!('speechData' in req.body)) {
         res.send(400, {error: 'No speechData found in form post'});
         return;
