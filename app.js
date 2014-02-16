@@ -111,7 +111,7 @@ app.put('/speeches/:speechNum', function(req, res) {
     }
     var contentType = req.get('Content-Type');
     var newSpeechData;
-    if (contentType === 'application/x-www-form-urlencoded') {
+    if (contentType.indexOf('application/x-www-form-urlencoded') === 0) {
       if (!('speechData' in req.body)) {
         res.send(400, {error: 'No speechData found in form post'});
         return;
@@ -125,7 +125,7 @@ app.put('/speeches/:speechNum', function(req, res) {
         }
         res.send({success: 'Speech ' + speechNum + ' saved!'});
       });
-    } else if (contentType === 'application/json') {
+    } else if (contentType.indexOf('application/json') === 0) {
       newSpeechData = req.body;
       speeches[speechNum] = newSpeechData;
       saveSpeeches(speeches, function(err) {
